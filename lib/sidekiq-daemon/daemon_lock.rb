@@ -14,7 +14,7 @@ module SidekiqDaemon
     end
 
     def lock
-      Sidekiq.redis { |redis| lock_object(redis).lock(2) }
+      Sidekiq.redis { |redis| lock_object(redis).lock(0) }
       yield
     ensure
       Sidekiq.redis { |redis| lock_object(redis).unlock }
