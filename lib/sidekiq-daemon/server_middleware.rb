@@ -12,6 +12,7 @@ module SidekiqDaemon
           end
         rescue Redis::Lock::LockNotAcquired
           Sidekiq.logger.debug("Lock not aquired, skipping job #{job['jid']}")
+          return false
         end
       else
         yield
