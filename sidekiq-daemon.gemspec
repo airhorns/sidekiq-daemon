@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.homepage          = "http://github.com/hornairs/sidekiq-daemon"
   s.email             = "harry.brundage@gmail.com"
   s.authors           = ["Harry Brundage"]
-  s.has_rdoc          = false
   s.files             = %w(README.md LICENSE)
   s.files            += Dir.glob("lib/**/*")
   s.add_runtime_dependency 'sidekiq', '~> 5.1.3'
