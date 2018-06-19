@@ -6,6 +6,7 @@ require 'sidekiq-daemon/worker'
 require 'sidekiq-daemon/daemon_lock'
 require 'sidekiq-daemon/client_middleware'
 require 'sidekiq-daemon/server_middleware'
+require 'sidekiq-daemon/daemon_inspector'
 
 module SidekiqDaemon
 end

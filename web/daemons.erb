@@ -1,0 +1,23 @@
+<h3>Daemons</h3>
+
+<div class="table_container">
+  <table class="table table-hover table-bordered table-striped table-white">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Expiry</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @daemon_inspector.daemons.each do |daemon_lock_key, properties| %>
+        <tr>
+          <td><%= daemon_lock_key %></td>
+          <td><%= properties[:owner] %></td>
+          <td><%= properties[:expiry] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
