@@ -1,6 +1,6 @@
 # sidekiq-daemon
 
-`sidekiq-daemon` makes it very easy to keep a job running forever in the background workers you already have in your application. You already have to keep your sidekiq job processes running, so let's just re-use that existing infrastructure for other daemon processes you might need.
+`sidekiq-daemon` makes it easy to keep a job running forever in the background. If you need to injest from a datastream, or poll for changes somewhere, sometime's it's more convienient to write a daemon that the infrastructure keeps running always, even as things fail. If you already have to keep your sidekiq job processes running, you can re-use that existing infrastructure for other daemon processes you might need with `sidekiq-daemon`.
 
 ### Status
 
@@ -12,7 +12,7 @@ Running long or forever running processes in web applications can be annoying. T
 
 Let's say you want to keep a Kafka consumer running forever ingesting and reacting to events in the background for the rest of the application to use later. Some folks run a different process type via a Procfile or a different Kubernetes Pod type that runs forever, and rely on the supervision of Heroku or Kubernetes to keep that thing running. That works just fine, but it adds a whole other class of process operators and developers need to care about. Any instrumentation that cares about where stuff is running has to know about this different tier, any liveness checks need to be adapted to run in or beside the tier, and you have one more thing that can fail.
 
-Instead, I think those processes should be run the same way as other background jobs in your system and on the same infrastructure. There's already robust tooling to understand what happens to background jobs, to scale them out across many workers, to hook into them to instrument them, and a great plugin ecosystem so you don't have to invent the pieces yourself. The trick is keeping that Kafka consumer always running, and only one copy of it running inside Sidekiq, so enter 'sidekiq-daemon'.
+Instead, I think those processes should be run the same way as other background jobs in your system and on the same infrastructure. There's already robust tooling to understand what happens to background jobs, to scale them out across many workers, to hook into them and instrument them, and a great plugin ecosystem so you don't have to invent the pieces yourself. The hard part is keeping exactly one of whatever your daemon process running using Sidekiq primitives, which is what 'sidekiq-daemon' bottles up for you.
 
 ### What it does
 
@@ -22,7 +22,7 @@ It's like `sidekiq-unique-jobs`, but way simpler, and allows for lock renewing t
 
 ### Using it
 
-You require two pieces: a scheduler entry to try to enqueue the job every so often, and then a job including `SidekiqDaemon::Worker` that calls out to the `daemon_lock.renew` method to keep the system aware that the long running job is still alive.
+You require two pieces: a scheduler entry to try to enqueue the job every so often, and then a job including `SidekiqDaemon::Worker`. Your job will only ever have one instance running once it includes the `SidekiqDaemon::Worker` module, but to keep the liveness check working, that job needs to call the `daemon_lock.renew` method more frequently than the `sidekiq_options[:daemon_lock_timeout]`. 
 
 ### Example
 
